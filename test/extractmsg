@@ -16,18 +16,12 @@ EOF
 test() {
 	exit=0
 	while read -r l; do
-		eval "${l}"
-		eval "$(msg_extractmsg "${l}")"
-		andmap || {
-			echo ${0##*/}: ${l} failed
-			exit=1
-		}
+		echo $l
+		echo "$(msg_extractmsg "${l}")"
 	done <<EOF
-input="author='viz',content='somethingsomething',em='[]',attach='[]'" \
-	eauthor="viz" econtent="somethingsomething" eem=[] eattach=[]
-input="author='hahaxd',content='something else',em='[]',attach='[]'" \
-	eauthor="hahaxd" econtent="something else" eem="[]" eattach=[]
+viz,"somethingsomething,else",[],[]
 EOF
+#hahaxd,something else,[],[]
 	return ${exit}
 }
 
