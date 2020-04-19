@@ -11,8 +11,8 @@ msg__parsesec() {
 	# sskip - Set when the loop has to break -- section ends
 	q=? p='' qskip=0 qqskip=0 sskip=0 quoted=0 content=''
 	while [ ${sskip} -eq 0 ]; do
-		chr=${1%"${1#${q}}"}
-		cchr=${chr#${p}}
+		chr="${1%"${1#${q}}"}"
+		cchr="${chr#${p}}"
 		[ -z "${cchr}" ] && break
 		_CONSUMED="${_CONSUMED}${cchr}"
 		# If a comma is preceeded by a quote, then content ends
@@ -26,7 +26,7 @@ msg__parsesec() {
 		[ ${sskip} -eq 0 ] && {
 			# If " is the first character in content field, ignore
 			# If message is quoted, then there might be a comma in the message.
-			[ "${cchr}" = \" ] &&
+			[ -z "${pchr}" ] && [ "${cchr}" = \" ] &&
 				quoted=1 qskip=1
 			[ ${qskip} -eq 0 ] && {
 				nchr="${1#"${chr}"}"
@@ -41,7 +41,12 @@ msg__parsesec() {
 					[ -n "${nchr}" ] && [ "${nchr}" = , ] &&
 						qskip=1
 				}
-				[ ${qqskip} -eq 0 ] && [ ${qskip} -eq 0 ] && content="${content}${cchr}"
+				# If the content string has quotes, then the section is quoted.
+				# Handle it properly for looking at the characters surrounding the quote
+				[ "${cchr}" = , ] && [ ${quoted} -eq 1 ] && [ "${pchr}" = \" ] &&
+						[ -n "${nchr}" ] && [ "${nchr}" != \" ] && sskip=1
+				[ ${sskip} -eq 0 ] && [ ${qqskip} -eq 0 ] && [ ${qskip} -eq 0 ] &&
+						content="${content}${cchr}"
 			}
 		}
 		ppchr=${pchr}

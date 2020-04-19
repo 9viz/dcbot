@@ -17,11 +17,12 @@ test() {
 	exit=0
 	while read -r l; do
 		echo $l
-		echo "$(msg_extractmsg "${l}")"
+		msg_extractmsg "${l}"
 	done <<EOF
 viz,"somethingsomething,else",[],[]
+hahaxd,something else,[],[]
+viz,"""test""",[],[]
 EOF
-#hahaxd,something else,[],[]
 	return ${exit}
 }
 
