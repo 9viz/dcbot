@@ -1,0 +1,15 @@
+#!/bin/sh
+
+a=asdjkafj
+cnt=1
+str=
+q=?
+p=
+
+while [ ${cnt} -le ${#a} ]; do
+	y=${a%${a#${q}}}
+	echo ${y#${p}}
+	q="${q}?"
+	p="${p}?"
+	: $((cnt+=1))
+done

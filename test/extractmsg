@@ -1,0 +1,20 @@
+#!/bin/sh
+. lib/msg.sh
+
+test() {
+	exit=0
+	while read -r l; do
+		eval "${l}"
+		reply="$(msg:extractmsg "${input}")"
+		[ "${reply}" != "${expected}" ] && {
+			echo ${0##*/}: expected "${expected}", got "${reply}"
+			exit=1
+		}
+	done <<EOF
+input='viz,somethingsomething,[],[]' expected='viz somethingsomething [] []'
+input='hahaxd,"something else",[],[]' expected='hahaxd "something else" [] []'
+EOF
+	return ${exit}
+}
+
+test

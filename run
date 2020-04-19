@@ -1,0 +1,19 @@
+#!/bin/sh
+# A discord "bot" using dcfs
+
+read -r TOKEN <data/.token
+read -r SERVER <data/.server
+read -r CHAN <data/.chan
+read -r MNT <data/.mnt
+read -r OWNER <data/.owner
+
+BPREFIX='-'
+
+die() {
+	fusermount -uz "${MNT}"
+}
+
+init() {
+	TOKEN="${TOKEN}" dcfs "${MNT}" "{{.Author.Username}}" "{{.Content}}" \
+		 "{{json .Embed}}" "{{json .Attachment}}" >data/dcfs.log
+}
