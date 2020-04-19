@@ -7,7 +7,6 @@
 # but the content will the owner's name.
 
 . lib/utils.sh
-. lib/msg.sh
 
 : ${_TAGDB:="${PREFIX}/data/tagdb"}
 : ${_OWNDB:="${PREFIX}/data/tagowndb"}
@@ -18,16 +17,19 @@ tags__ispsr() {
 	[ -e "${_TAGDB}/${1}" ]
 }
 
-# ${1} is the tag's name and everything else is tag's content
-# A message will be echoed back indicating if the tag is set or not.
+# ${1} is the tag's name
+# ${2} is the tag's author
+# Everything else is tag's content
 tags_set() {
-	tags__ispsr && {
+	tags__ispsr "${1}" && {
 		echo error: "${1}" already present!
 		return 1
 	}
 
-	tag="${1}"; shift
+	tag="${1}" auth="${2}"
+	shift 2
 	echo "${@}" >${_TAGDB}/"${tag}"
+	echo "${auth}" >${_OWNDB}/"${tag}"
 }
 
 # ${1} is the tag's name
@@ -44,23 +46,38 @@ tags_owner() {
 	printfile "${_OWNDB}/${1}"
 }
 
+# Parse a quoted set command
+tags__quoted_set() {
+	:
+}
+
 # Parse the tag message
 # ${1} is the message and ${2} is the author
 tags_parse() {
 	msg="${1#"${BPREFIX}tags "}" cmd="${msg%% *}"
 	case ${cmd} in
-	set) ;;
+	set)
+		tag="${msg#set }"
+		if [ "${tag%"${tag#?}"}" != \" ]; then
+			tags_set "${tag%% *}" "${2}" "${tag#* }"
+		else
+			tags__quoted_set "${tag}"
+		fi
+		;;
 	get)
-		tag="${msg#del}"
+		tag="${msg#get }"
 		# Remove trailing and leading quote
 		tag="${tag#\"}"
 		tags_get "${tag%\"}"
 		;;
 	del)
-		tag="${msg#del}"
+		tag="${msg#del }"
 		# Remove trailing and leading quote
 		tag="${tag#\"}"
 		tag="${tag%\"}"
+		tags__ispsr "${tag}" || {
+			echo error: "${tag}" is not a valid tag
+		}
 		[ "${2}" != "$(tags_owner "${tag}")" ] && {
 			echo error: ${2} is not the owner of "${tag}"
 			skip=1
