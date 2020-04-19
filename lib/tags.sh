@@ -32,7 +32,7 @@ tags_set() {
 
 # ${1} is the tag's name
 tags_get() {
-	! tags__ispsr && {
+	tags__ispsr || {
 		echo error: "${1}" is not present!
 		return 1
 	}
@@ -45,7 +45,33 @@ tags_owner() {
 }
 
 # Parse the tag message
-# ${1} is the message
+# ${1} is the message and ${2} is the author
 tags_parse() {
-	:
+	msg="${1#"${BPREFIX}tags "}" cmd="${msg%% *}"
+	case ${cmd} in
+	set) ;;
+	get)
+		tag="${msg#del}"
+		# Remove trailing and leading quote
+		tag="${tag#\"}"
+		tags_get "${tag%\"}"
+		;;
+	del)
+		tag="${msg#del}"
+		# Remove trailing and leading quote
+		tag="${tag#\"}"
+		tag="${tag%\"}"
+		[ "${2}" != "$(tags_owner "${tag}")" ] && {
+			echo error: ${2} is not the owner of "${tag}"
+			skip=1
+		}
+		rm -f "${_TAGDB}/${tag}" "${_OWNDB}/${tag}"
+		;;
+	*)
+		echo error: unknown tags command ${cmd}
+		return 1
+		;;
+	esac
+
+	unset msg tag
 }

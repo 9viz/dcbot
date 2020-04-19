@@ -1,0 +1,16 @@
+#!/bin/sh
+
+. lib/tags.sh
+
+BPREFIX=-
+
+test() {
+	while read -r l; do
+		tags_parse "${l}" viz
+	done <<EOF
+-tags set blah blah
+-tags get blah
+EOF
+}
+
+test
