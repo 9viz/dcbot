@@ -1,5 +1,5 @@
 log() {
-	printf '%s: %s' `date +'%Y-%m-%d %H:%M` "${@}" >>data/log
+	printf '%s: %s' `date +'%Y-%m-%d %H:%M'` "${@}" >>data/log
 }
 
 # For smaller files, this function should be significantly faster than cat
