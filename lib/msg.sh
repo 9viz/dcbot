@@ -79,21 +79,18 @@ msg_extractmsg() {
 		case ${cnt} in
 		1)
 			author="$(msg__parsesec "${1#${_CONSUMED}}")"
-			: $((cnt+=1))
 			;;
 		2)
 			content="$(msg__parsesec "${1#${_CONSUMED}}")"
-			: $((cnt+=1))
 			;;
 		3)
 			embed="$(msg__parsesec "${1#${_CONSUMED}}")"
-			: $((cnt+=1))
 			;;
 		4)
 			attach="$(msg__parsesec "${1#${_CONSUMED}}")"
-			: $((cnt+=1))
 			;;
 		esac
+		: $((cnt+=1))
 	done
 	rm -f ${tmpf}
 }
