@@ -54,6 +54,7 @@ msg__parsesec() {
 		q="${q}?"
 		p="${p}?"
 		[ ${qqskip} -eq 1 ] && {
+			_CONSUMED="${_CONSUMED}\""
 			q="${q}?"
 			p="${p}?"
 			qqskip=0
@@ -75,7 +76,7 @@ msg_extractmsg() {
 	tmpf=$(mktemp)
 	cnt=1
 	while [ ${cnt} -le 4 ]; do
-		[ -f ${tmpf} ] && _CONSUMED="$(printfile ${tmpf})"
+		_CONSUMED="$(printfile ${tmpf})"
 		case ${cnt} in
 		1)
 			author="$(msg__parsesec "${1#${_CONSUMED}}")"
@@ -92,5 +93,6 @@ msg_extractmsg() {
 		esac
 		: $((cnt+=1))
 	done
+	echo $content
 	rm -f ${tmpf}
 }

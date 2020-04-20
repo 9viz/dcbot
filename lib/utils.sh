@@ -1,4 +1,4 @@
-rand=1787123987
+rand=17871
 
 log() {
 	printf '%s: %s' `date +'%Y-%m-%d %H:%M'` "${@}" >>data/log
@@ -13,10 +13,9 @@ printfile() {
 }
 
 # A really shitty random number generator
-# TODO: Fix illegal number error
+# Illegal numbers are way less frequent using this method.
 genrand() {
 	a=`date +%N`
-	m=115292150460684
-	rand=$(((a*rand+2)%(m+rand%3)))
-	unset m a
+	m=11529215
+	rand=$(((a*rand+b)%m))
 }

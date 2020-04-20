@@ -1,8 +1,15 @@
 #!/bin/sh
 
-. lib/tags.sh
-
 BPREFIX=-
+PREFIX=.
+_TAGDB=test/data/tagdb
+_OWNDB=test/data/tagowndb
+
+for i in "${_TAGDB}" "${_OWNDB}"; do
+	rm -r "${i}"; mkdir -p "${i}"
+done
+
+. lib/tags.sh
 
 test() {
 	while read -r l; do

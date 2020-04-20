@@ -15,6 +15,6 @@ die() {
 
 init() {
 	TOKEN="${TOKEN}" dcfs "${MNT}" \
-		 '{{.Author.Username}}' {{.Content}}' \
+		 '{{.Author.Username}}' '{{.Content}}' \
 		 '{{json .Embed}}' '{{json .Attachment}}' >data/dcfs.log
 }
