@@ -17,6 +17,8 @@ test() {
 	done <<EOF
 -tags set blah blah
 -tags get blah
+-tags set "blah blah" hahaxd
+-tags get "blah blah"
 EOF
 }
 

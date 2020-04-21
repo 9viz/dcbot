@@ -48,7 +48,25 @@ tags_owner() {
 
 # Parse a quoted set command
 tags__quoted_set() {
-	:
+	q=? p='' chr='' cchr='' nchr='' str="${1#\"}" consumed='' name=''
+	while :; do
+		chr="${str%"${str#${q}}"}"
+		cchr="${chr#${p}}"
+		consumed="${consumed}${cchr}"
+		[ "${cchr}" = \" ] && {
+			nchr="${str#"${chr}"}"
+			nchr="${nchr%"${nchr#?}"}"
+			[ "${nchr}" = ' ' ] && {
+				consumed="${consumed} "
+				break
+			}
+		}
+		name="${name}${cchr}"
+		q="${q}?"
+		p="${p}?"
+	done
+	tags_set "${name}" "${2}" "${str#"${consumed}"}"
+	unset q p chr cchr nchr str consumed name
 }
 
 # Parse the tag message
@@ -61,7 +79,7 @@ tags_parse() {
 		if [ "${tag%"${tag#?}"}" != \" ]; then
 			tags_set "${tag%% *}" "${2}" "${tag#* }"
 		else
-			tags__quoted_set "${tag}"
+			tags__quoted_set "${tag}" "${2}"
 		fi
 		;;
 	get)
