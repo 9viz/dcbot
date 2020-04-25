@@ -8,14 +8,12 @@
 
 . lib/utils.sh
 
-: ${_TAGDB:="${PREFIX}/data/tagdb"}
-: ${_OWNDB:="${PREFIX}/data/tagowndb"}
+: ${_TAGDB:="data/tagdb"}
+: ${_OWNDB:="data/tagowndb"}
 
 # Is tag present?
 # ${1} is the tag's name
-tags__ispsr() {
-	[ -e "${_TAGDB}/${1}" ]
-}
+tags__ispsr() [ -e "${_TAGDB}/${1}" ];
 
 # ${1} is the tag's name
 # ${2} is the tag's author
@@ -28,8 +26,8 @@ tags_set() {
 
 	tag="${1}" auth="${2}"
 	shift 2
-	echo "${@}" >${_TAGDB}/"${tag}"
-	echo "${auth}" >${_OWNDB}/"${tag}"
+	echo "${@}" >${_TAGDB}/${tag}
+	echo "${auth}" >${_OWNDB}/${tag}
 }
 
 # ${1} is the tag's name
@@ -42,9 +40,7 @@ tags_get() {
 }
 
 # Who is the owner of tag ${1}?
-tags_owner() {
-	printfile "${_OWNDB}/${1}"
-}
+tags_owner() printfile "${_OWNDB}/${1}";
 
 # Parse a quoted set command
 tags__quoted_set() {
@@ -93,9 +89,8 @@ tags_parse() {
 		# Remove trailing and leading quote
 		tag="${tag#\"}"
 		tag="${tag%\"}"
-		tags__ispsr "${tag}" || {
+		tags__ispsr "${tag}" ||
 			echo error: "${tag}" is not a valid tag
-		}
 		[ "${2}" != "$(tags_owner "${tag}")" ] && {
 			echo error: ${2} is not the owner of "${tag}"
 			skip=1
@@ -108,5 +103,5 @@ tags_parse() {
 		;;
 	esac
 
-	unset msg tag
+	unset msg tag cmd
 }

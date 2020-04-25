@@ -1,0 +1,20 @@
+. lib/msg.sh
+
+BPREFIX=-
+
+test() {
+	while read -r l; do
+		if msg_cmd "${l}"; then
+			echo ${content} yes
+		else
+			echo ${content} no
+		fi
+		rm -fr ${MSG}
+	done <<EOF
+viz,-aasds
+viz,aasdkj
+viz,-asdkj
+EOF
+}
+
+test

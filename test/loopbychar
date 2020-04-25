@@ -1,15 +1,29 @@
 #!/bin/sh
 
-a=asdjkafj
-cnt=1
-str=
-q=?
-p=
-
-while [ ${cnt} -le ${#a} ]; do
+a="viz,somethingsomething,[],[]"
+cnt=1 q=? p='' skip=0
+s=${a#?}
+echo ${a%"$s"}
+while [ ${cnt} -lt ${#a} ]; do
 	y=${a%${a#${q}}}
-	echo ${y#${p}}
+	curchar=${y#${p}}
+	echo $y $curchar
+	#n=${a#$y}
+	#n=${n%${n#?}}
+	#[ ${curchar} = , ] && skip=1
+	#[ ${skip} -eq 0 ] && {
+	#[ ${curchar} = \" ] && [ ${n} ] && [ ${n} = \" ] && {
+		#echo \"
+		#skip=1
+	#}
+	#[ ${skip} = 0 ] && echo ${curchar}
+	#}
 	q="${q}?"
 	p="${p}?"
+	#[ ${skip} = 1 ] && {
+		#q="${q}?"
+		#p="${p}?"
+		#skip=0
+	#}
 	: $((cnt+=1))
 done

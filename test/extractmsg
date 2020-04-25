@@ -17,6 +17,8 @@ test() {
 	exit=0
 	while read -r l; do
 		msg_extractmsg "${l}"
+		cat ${MSG}/msg ${MSG}/author
+		rm -fr ${MSG}
 	done <<EOF
 viz,"somethingsomething,else",[],[]
 hahaxd,something else,[],[]

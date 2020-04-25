@@ -1,8 +1,6 @@
 rand=17871
 
-log() {
-	printf '%s: %s' `date +'%Y-%m-%d %H:%M'` "${@}" >>data/log
-}
+log() printf '%s: %s\n' `date +'%Y-%m-%d%H:%M'` "${*}" >>data/log;
 
 # For smaller files, this function should be significantly faster than cat
 printfile() {

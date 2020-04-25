@@ -1,6 +1,6 @@
 . lib/utils.sh
 
-# Parse a section of the message
+# Parse a author and message of the message
 msg__parsesec() {
 	# _CONSUMED is the string that is read by the function
 	# This helps in separating off the section in msg_extractmsg
@@ -62,37 +62,31 @@ msg__parsesec() {
 		[ ${qskip} -eq 1 ] && qskip=0
 	done
 	echo "${content}"
-	echo "${_CONSUMED}" >${tmpf}
-	unset q p qskip qqskip sskip quoted content pchr ppchr chr cchr _CONSUMED
+	unset q p qskip qqskip sskip quoted content pchr ppchr chr cchr
 }
 
+# This only returns the url field
+msg__parsejson() {
+	:
+}
 
 # Message and some metadata is encoded in csv
 # See run/init if you want to see the exact format
 # ${1} is the message string
-
-# TODO: Think of a way to store the value of the variables
 msg_extractmsg() {
-	tmpf=$(mktemp)
-	cnt=1
-	while [ ${cnt} -le 4 ]; do
-		_CONSUMED="$(printfile ${tmpf})"
+	_CONSUMED='' MSG=`mktemp -d` cnt=1
+	while [ ${cnt} -le 2 ]; do
 		case ${cnt} in
-		1)
-			author="$(msg__parsesec "${1#${_CONSUMED}}")"
-			;;
-		2)
-			content="$(msg__parsesec "${1#${_CONSUMED}}")"
-			;;
-		3)
-			embed="$(msg__parsesec "${1#${_CONSUMED}}")"
-			;;
-		4)
-			attach="$(msg__parsesec "${1#${_CONSUMED}}")"
-			;;
+		1) msg__parsesec "${1#${_CONSUMED}}" >${MSG}/author ;;
+		2) msg__parsesec "${1#${_CONSUMED}}" >${MSG}/msg    ;;
 		esac
 		: $((cnt+=1))
 	done
-	echo $content
-	rm -f ${tmpf}
+	unset cnt
+}
+
+msg_cmd() {
+	msg_extractmsg "${1}"
+	content=`printfile ${MSG}/msg`
+	[ -n "${content}" ] && [ "${content%${content#?}}" = "${BPREFIX}" ]
 }
