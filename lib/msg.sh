@@ -1,8 +1,18 @@
+# Sourced for using printfile
 . lib/utils.sh
 
-# Parse a author and message of the message
+# Globals:
+# _CONSUMED: It is reset by msg_extractmsg whenever it is called
+#            It stores the string that is parsed by msg__parsesec
+#       MSG: Temporary directory in which the message and its author are stored
+#            It has to be removed in the main loop.
+
+# Parse a section of the csv string. It can parse author and msg
+# sucessfully but fails to parse json.
+# To parse json, check msg__parsejson (WIP).
+# ${1} is the csv string but with ${_CONSUMED} cut off from the beginning
 msg__parsesec() {
-	# _CONSUMED is the string that is read by the function
+	# _CONSUMED is the string that is already read by the function
 	# This helps in separating off the section in msg_extractmsg
 	# qskip - Set when the first / last character in the message is quotes
 	# qqskip - Set when a double quotes appears. Used to replace double quotes
@@ -85,6 +95,7 @@ msg_extractmsg() {
 	unset cnt
 }
 
+# ${1} is the csv string
 msg_cmd() {
 	msg_extractmsg "${1}"
 	content=`printfile ${MSG}/msg`
