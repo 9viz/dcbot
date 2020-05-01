@@ -2,6 +2,6 @@
 
 . lib/utils.sh
 
-while :; do
-	genrand; echo $rand
+for _ in `seq 100000`; do
+	rand 10 15
 done

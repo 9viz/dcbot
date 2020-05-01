@@ -1,19 +1,20 @@
 . lib/msg.sh
 
-BPREFIX=-
+BPREFIX=- OWNER=viz
 
 test() {
 	while read -r l; do
 		if msg_cmd "${l}"; then
-			echo ${content} yes
+			echo ${l}: yes
 		else
-			echo ${content} no
+			echo ${l}: no
 		fi
 		rm -fr ${MSG}
 	done <<EOF
 viz,-aasds
 viz,aasdkj
 viz,-asdkj
+haha,askdjaksjd
 EOF
 }
 

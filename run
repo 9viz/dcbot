@@ -1,11 +1,11 @@
 #!/bin/sh
 # A discord "bot" using dcfs
 
-read -r TOKEN <data/.token
+read -r TOKEN  <data/.token
 read -r SERVER <data/.server
-read -r CHAN <data/.chan
-read -r MNT <data/.mnt
-read -r OWNER <data/.owner
+read -r CHAN   <data/.chan
+read -r MNT    <data/.mnt
+read -r OWNER  <data/.owner
 
 BPREFIX='-'
 
@@ -18,9 +18,12 @@ die() {
 	read pid <data/pid
 	kill ${pid}
 	rm -f data/pid
+	exit 0
 }
 
 init() {
+	trap die INT
+
 	_TAGDB="data/tagdb"
 	_OWNDB="data/tagowndb"
 	for i in ${MNT} ${_TAGDB} ${_OWNDB}; do
@@ -38,8 +41,6 @@ init() {
 	done
 }
 
-# TODO: trap
-die
 init
 
 while [ ! -f "${MNT}/${SERVER}/${CHAN}" ]; do
