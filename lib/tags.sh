@@ -29,7 +29,7 @@ tags_set() {
 	echo "${@}" >${_TAGDB}/${tag}
 	echo "${auth}" >${_OWNDB}/${tag}
 
-	echo "${tag}" set to "${@}"
+	echo \""${tag}"\" set to \""${@}"\"
 }
 
 # ${1} is the tag's name
@@ -68,7 +68,8 @@ tags__quoted_set() {
 }
 
 # Parse the tag message
-# ${1} is the message and ${2} is the author
+# ${1} is the message 
+# ${2} is the author
 tags_parse() {
 	msg="${1#"${BPREFIX}tags "}" cmd="${msg%% *}"
 	case ${cmd} in
