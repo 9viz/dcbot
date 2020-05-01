@@ -33,13 +33,13 @@ init() {
 		 #'{{json .Embed}}' '{{json .Attachment}}' >data/dcfs.log
 	echo ${!} >data/pid
 
-	for i in lib/*; do
+	for i in lib/*.sh; do
 		. ${i}
 	done
 }
 
+# TODO: trap
 die
-
 init
 
 while [ ! -f "${MNT}/${SERVER}/${CHAN}" ]; do
@@ -48,7 +48,7 @@ done
 
 log starting to read ${CHAN}
 
-# tail -f in a fuse fs (probably only dcfs?) doesn't really work in a proper way
+# tail -f in a fuse fs doesn't really work in a proper way
 # When the file changes, tail -f -n1 doesn't output the last line.
 # But when the file does change, GNU tail outputs a single line to stderr
 # so we capture that and listen for commands but this is not consistent.
@@ -56,11 +56,18 @@ log starting to read ${CHAN}
 while :; do
 	l="$(tail -n1 "${MNT}/${SERVER}/${CHAN}")"
 	[ "${l}" = "${p}" ] && continue
-	msg_cmd "${l}" || continue
+	msg_cmd "${l}" || {
+		p="${l}"
+		rm -fr ${MSG}
+		continue
+	}
 	cmd=${content#?}
 	case ${cmd%% *} in
 	tags)
-		tags_parse "${content}"
+		tags_parse "${content}" "${author}"
+		;;
+	choose)
+		choose "${content#${BPREFIX}choose }"
 		;;
 	test)
 		printf '%s\n' test
@@ -69,7 +76,7 @@ while :; do
 		printf '%s\n' no
 		;;
 	esac >${MNT}/${SERVER}/${CHAN}
-	sleep 1
 	rm -fr ${MSG}
 	p="${l}"
+	sleep 1
 done
