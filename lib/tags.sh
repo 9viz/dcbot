@@ -28,6 +28,8 @@ tags_set() {
 	shift 2
 	echo "${@}" >${_TAGDB}/${tag}
 	echo "${auth}" >${_OWNDB}/${tag}
+
+	echo "${tag}" set to "${@}"
 }
 
 # ${1} is the tag's name

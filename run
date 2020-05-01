@@ -9,12 +9,67 @@ read -r OWNER <data/.owner
 
 BPREFIX='-'
 
+# Previous csv string
+p=''
+
 die() {
+	echo dying, bye...
 	fusermount -uz "${MNT}"
+	read pid <data/pid
+	kill ${pid}
+	rm -f data/pid
 }
 
 init() {
+	_TAGDB="data/tagdb"
+	_OWNDB="data/tagowndb"
+	for i in ${MNT} ${_TAGDB} ${_OWNDB}; do
+		[ -d ${i} ] || mkdir -p ${i}
+	done
+
 	TOKEN="${TOKEN}" dcfs "${MNT}" \
-		 '{{.Author.Username}}' '{{.Content}}' \
-		 '{{json .Embed}}' '{{json .Attachment}}' >data/dcfs.log
+		'{{.Author.Username}}' '{{.Content}}' '{{time .Timestamp "3:04PM"}}' \
+			>data/dcfs.log 2>data/dcfs.log &
+		 #'{{json .Embed}}' '{{json .Attachment}}' >data/dcfs.log
+	echo ${!} >data/pid
+
+	for i in lib/*; do
+		. ${i}
+	done
 }
+
+die
+
+init
+
+while [ ! -f "${MNT}/${SERVER}/${CHAN}" ]; do
+	sleep 0.1
+done
+
+log starting to read ${CHAN}
+
+# tail -f in a fuse fs (probably only dcfs?) doesn't really work in a proper way
+# When the file changes, tail -f -n1 doesn't output the last line.
+# But when the file does change, GNU tail outputs a single line to stderr
+# so we capture that and listen for commands but this is not consistent.
+# NOTE: I cannot use other inotify-based tools either.
+while :; do
+	l="$(tail -n1 "${MNT}/${SERVER}/${CHAN}")"
+	[ "${l}" = "${p}" ] && continue
+	msg_cmd "${l}" || continue
+	cmd=${content#?}
+	case ${cmd%% *} in
+	tags)
+		tags_parse "${content}"
+		;;
+	test)
+		printf '%s\n' test
+		;;
+	help)
+		printf '%s\n' no
+		;;
+	esac >${MNT}/${SERVER}/${CHAN}
+	sleep 1
+	rm -fr ${MSG}
+	p="${l}"
+done
