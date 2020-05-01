@@ -1,6 +1,3 @@
-# Sourced for using printfile
-. lib/utils.sh
-
 # Globals:
 # _CONSUMED: It is reset by msg_extractmsg whenever it is called
 #            It stores the string that is parsed by msg__parsesec
@@ -98,6 +95,8 @@ msg_extractmsg() {
 # ${1} is the csv string
 msg_cmd() {
 	msg_extractmsg "${1}"
-	content=`printfile ${MSG}/msg`
-	[ -n "${content}" ] && [ "${content%${content#?}}" = "${BPREFIX}" ]
+	read -r content <${MSG}/msg
+	read -r author  <${MSG}/author
+	[ -n "${content}" ] && [ "${content%${content#?}}" = "${BPREFIX}" ] &&
+		 [ "${author}" = "${OWNER}" ]
 }
