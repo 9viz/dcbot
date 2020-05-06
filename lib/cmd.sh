@@ -28,3 +28,15 @@ ${str}"
 
 	unset q p cnt str cchr items
 }
+
+# Effective shitposting, simply run the text through a sed script
+shitpost() {
+	sed '
+y/ABCDEFGHIJKLMNOPQRSTUVWXYZ /abcdefghijklmnopqrstuvwxyz\t/
+s/[^b\t]/:regional_indicator_&: /g
+s/\t/:clap: /g
+s/b/:b: /g
+' <<EOF
+${*}
+EOF
+}
