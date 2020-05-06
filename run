@@ -33,12 +33,17 @@ init() {
 	TOKEN="${TOKEN}" dcfs "${MNT}" \
 		'{{.Author.Username}}' '{{.Content}}' '{{time .Timestamp "3:04PM"}}' \
 			>data/dcfs.log 2>data/dcfs.log &
-		 #'{{json .Embed}}' '{{json .Attachment}}' >data/dcfs.log
+
 	echo ${!} >data/pid
 
 	for i in lib/*.sh; do
-		. ${i}
-	done
+		. "${i}"
+	done	
+}
+
+type dcfs >/dev/null || {
+	echo error: dcfs not found
+	exit 1
 }
 
 init
@@ -69,6 +74,9 @@ while :; do
 		;;
 	choose)
 		choose "${content#${BPREFIX}choose }"
+		;;
+	shitpost)
+		shitpost "${content#${BPREFIX}shitpost }"
 		;;
 	test)
 		printf '%s\n' test
