@@ -64,6 +64,17 @@ msg__parsesec() {
 		q="${q}?"
 		p="${p}?"
 		[ ${qqskip} -eq 1 ] && {
+			# When we set qqskip to 1, we will be skipping ahead and
+			# this can be seen from the fact that the string used to
+			# cut off bits from the start and the end has an extra
+			# ?.
+			# As a result,
+			# 1. _CONSUMED does not have the extra quote.
+			# 2. ppchr is set to the older ppchr. Say that we're in
+			# the middle of parsing asdf"",.... when we set qqskip to
+			# 1 and jump to the next loop, ppchr is set f WHEN it
+			# should be set to " and hence the parsing ends
+			# prematurely.
 			_CONSUMED="${_CONSUMED}\""
 			ppchr=\"
 			q="${q}?"
