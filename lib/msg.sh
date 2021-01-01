@@ -11,12 +11,12 @@
 msg__parsesec() {
 	# _CONSUMED is the string that is already read by the function
 	# This helps in separating off the section in msg_extractmsg
-	# qskip - Set when the first / last character in the message is quotes
+	# qskip	 - Set when the first / last character in the message is quotes
 	# qqskip - Set when a double quotes appears. Used to replace double quotes
-	# with single quotes.
+	#          with single quotes.
 	# quoted - Tracks if the section is quoted.
-	# sskip - Set when the loop has to break -- section ends
-	q=? p='' qskip=0 qqskip=0 sskip=0 quoted=0 content=''
+	# sskip	 - Set when the loop has to break -- section ends
+	q='?' p='' qskip=0 qqskip=0 sskip=0 quoted=0 content=''
 	while [ ${sskip} -eq 0 ]; do
 		chr="${1%"${1#${q}}"}"
 		cchr="${chr#${p}}"
@@ -26,8 +26,8 @@ msg__parsesec() {
 		# Unless, the previous character wrt the quote is also a
 		# quote, in which case, we add ,
 		[ "${cchr}" = ',' ] && {
-			[ ${quoted} -eq 1 ] && [ "${pchr}" = \" ] && [ "${ppchr}" != \" ] &&
-				sskip=1
+			[ ${quoted} -eq 1 ] && [ "${pchr}" = \" ] &&
+				[ "${ppchr}" != \" ] && sskip=1
 			[ ${quoted} -eq 0 ] && sskip=1
 		}
 		[ ${sskip} -eq 0 ] && {
@@ -43,17 +43,20 @@ msg__parsesec() {
 					# then push a single "
 					[ -n "${nchr}" ] && [ "${nchr}" = \" ] &&
 						content="${content}\"" qqskip=1
-					# If the current character is a quote and the next character is a comma
-					# then don't push anything
+					# If the current character is a quote and
+					# the next character is a comma then don't push anything
 					[ -n "${nchr}" ] && [ "${nchr}" = , ] &&
 						qskip=1
 				}
 				# If the content string has quotes, then the section is quoted.
-				# Handle it properly for looking at the characters surrounding the quote
-				[ "${cchr}" = , ] && [ ${quoted} -eq 1 ] && [ "${pchr}" = \" ] &&
-						[ -n "${nchr}" ] && [ "${nchr}" != \" ] && sskip=1
-				[ ${sskip} -eq 0 ] && [ ${qqskip} -eq 0 ] && [ ${qskip} -eq 0 ] &&
-						content="${content}${cchr}"
+				# Handle it properly by looking at the characters
+				# surrounding the quote
+				[ "${cchr}" = , ] && [ ${quoted} -eq 1 ] &&
+					[ "${pchr}" = \" ] && [ -n "${nchr}" ] &&
+					[ "${nchr}" != \" ] && sskip=1
+
+				[ ${sskip} -eq 0 ] && [ ${qqskip} -eq 0 ] &&
+					[ ${qskip} -eq 0 ] && content="${content}${cchr}"
 			}
 		}
 		ppchr=${pchr}
@@ -62,6 +65,7 @@ msg__parsesec() {
 		p="${p}?"
 		[ ${qqskip} -eq 1 ] && {
 			_CONSUMED="${_CONSUMED}\""
+			ppchr=\"
 			q="${q}?"
 			p="${p}?"
 			qqskip=0
@@ -70,11 +74,6 @@ msg__parsesec() {
 	done
 	echo "${content}"
 	unset q p qskip qqskip sskip quoted content pchr ppchr chr cchr
-}
-
-# This only returns the url field
-msg__parsejson() {
-	:
 }
 
 # Message and some metadata is encoded in csv
