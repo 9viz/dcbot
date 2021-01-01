@@ -69,10 +69,11 @@ msg__parsesec() {
 			# cut off bits from the start and the end has an extra
 			# ?.
 			# As a result,
-			# 1. _CONSUMED does not have the extra quote.
+			# 1. _CONSUMED does not have the extra quote and we add it
+			# manually.
 			# 2. ppchr is set to the older ppchr. Say that we're in
 			# the middle of parsing asdf"",.... when we set qqskip to
-			# 1 and jump to the next loop, ppchr is set f WHEN it
+			# 1 and jump to the next loop, ppchr is set to f WHEN it
 			# should be set to " and hence the parsing ends
 			# prematurely.
 			_CONSUMED="${_CONSUMED}\""
