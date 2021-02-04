@@ -54,11 +54,11 @@ done
 
 log starting to read ${CHAN}
 
-# tail -f in a fuse fs doesn't really work in a proper way
-# When the file changes, tail -f -n1 doesn't output the last line.
-# But when the file does change, GNU tail outputs a single line to stderr
-# so we capture that and listen for commands but this is not consistent.
-# NOTE: I cannot use other inotify-based tools either.
+# tail -f in a fuse fs doesn't really work in a proper way. When the
+# file changes, tail -f -n1 doesn't output the last line. But when the
+# file does change, GNU tail outputs a single line to stderr which
+# could be captured to listen listen for commands but it is not
+# consistent. I cannot use other inotify-based tools either.
 while :; do
 	l="$(tail -n1 "${MNT}/${SERVER}/${CHAN}")"
 	[ "${l}" = "${p}" ] && continue

@@ -29,7 +29,6 @@ ${str}"
 	unset q p cnt str cchr items
 }
 
-# Effective shitposting, simply run the text through a sed script
 shitpost() {
 	# I could write a sed script but I want this to stay P U R E.
 	cnt=0 q=? p='' res=''
@@ -38,7 +37,7 @@ shitpost() {
 		chr="${chr#${p}}"
 		case ${chr} in
 		[aA]) chr=":regional_indicator_a: " ;;
-		[bB]) chr=":regional_indicator_b: " ;;
+		[bB]) chr=":b: "                    ;;
 		[cC]) chr=":regional_indicator_c: " ;;
 		[dD]) chr=":regional_indicator_d: " ;;
 		[eE]) chr=":regional_indicator_e: " ;;
