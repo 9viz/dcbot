@@ -1,0 +1,14 @@
+#!/bin/sh
+
+. lib/cmd.sh
+
+test() {
+	while read -r l; do
+		shitpost "${l}"
+	done <<EOF
+shit post
+something else
+EOF
+}
+
+test

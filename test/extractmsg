@@ -1,18 +1,20 @@
 #!/bin/sh
+
 . lib/msg.sh
 
 test() {
 	exit=0
 	while read -r l; do
-		msg_extractmsg "${l}"
-		cat ${MSG}/msg ${MSG}/author
-		rm -fr ${MSG}
+		_CONSUMED=''
+		msg__parsesec "${l#"${_CONSUMED}"}"
+		msg__parsesec "${l#"${_CONSUMED}"}"
+		msg__parsesec "${l#"${_CONSUMED}"}"
+		msg__parsesec "${l#"${_CONSUMED}"}"
 	done <<EOF
 viz,"somethingsomething,else",[]
 hahaxd,something else,[],[]
 viz,"""test""",[],[]
 viz,,"[{""id"":""701340723731103774"",""filename"":""unknown.png"",""size"":11496,""url"":""https://cdn.discordapp.com/attachments/361920025051004939/701340723731103774/unknown.png"",""proxy_url"":""https://media.discordapp.net/attachments/361920025051004939/701340723731103774/unknown.png"",""height"":192,""width"":412}]",[]
-viz,"what if this is possible\n```\n(exec zathura (sel (filter (lambda (x) (endswith x "".pdf"")) (list-files ""~/Downloads""))))```",[],[]
 EOF
 	return ${exit}
 }

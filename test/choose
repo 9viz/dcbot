@@ -1,0 +1,13 @@
+#!/bin/sh
+
+. lib/cmd.sh
+
+test() {
+	while read -r l; do
+		choose "${l}"
+	done <<EOF
+a or b or c or d or e
+EOF
+}
+
+test

@@ -1,29 +1,12 @@
 #!/bin/sh
 
-a="viz,somethingsomething,[],[]"
-cnt=1 q=? p='' skip=0
-s=${a#?}
-echo ${a%"$s"}
+a="haha this is amazing"
+cnt=1 q=? p=''
+
 while [ ${cnt} -lt ${#a} ]; do
 	y=${a%${a#${q}}}
-	curchar=${y#${p}}
-	echo $y $curchar
-	#n=${a#$y}
-	#n=${n%${n#?}}
-	#[ ${curchar} = , ] && skip=1
-	#[ ${skip} -eq 0 ] && {
-	#[ ${curchar} = \" ] && [ ${n} ] && [ ${n} = \" ] && {
-		#echo \"
-		#skip=1
-	#}
-	#[ ${skip} = 0 ] && echo ${curchar}
-	#}
+	echo ${y#${p}}
 	q="${q}?"
 	p="${p}?"
-	#[ ${skip} = 1 ] && {
-		#q="${q}?"
-		#p="${p}?"
-		#skip=0
-	#}
 	: $((cnt+=1))
 done
